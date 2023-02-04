@@ -49,7 +49,25 @@ class Player(Cell):
         super().__init__(row, col, size)
         self.color = (255, 0, 0)
 
+    def get_row(self):
+        return self.row
 
+    def set_row(self, row):
+        self.row = row
+        self.rect.x = self.row * self.size
+
+    def get_col(self):
+        return self.col
+
+    def set_col(self, col):
+        self.col = col
+        self.rect.y = self.col * self.size
+
+    def get_size(self):
+        return self.size
+
+
+# TODO: create an objects dict that stores Cell objects, used for easy printing
 class Board:
     def __init__(self, tile_count, tile_size, width, height):
         self.tile_count = tile_count
@@ -121,13 +139,30 @@ class Board:
                 text = font.render(str(count), True, (127, 127, 127))
                 screen.blit(text, pos)
 
+    def flip_tile_at_loc(self, pos):
+        for i in range(self.tile_count):
+            for j in range(self.tile_count):
+                rect = self.tiles[i][j].get_rect()
+                if rect.collidepoint(pos):
+                    self.tiles[i][j].set_state(int(not bool(self.tiles[i][j].get_state())))
+
 
 class Mazectric(Board):
     def __init__(self, cell_count, cell_size, width, height):
         super().__init__(cell_count, cell_size, width, height)
         self.player = Player(0, 0, cell_size)
+        self.key_commands = {pygame.K_w: self.player_move_up,
+                             pygame.K_s: self.player_move_down,
+                             pygame.K_a: self.player_move_left,
+                             pygame.K_d: self.player_move_right,
+                             pygame.K_r: self.gen}
 
     def update(self):
+        self.update_tiles()
+        self.update_player()
+
+    def update_tiles(self):
+        # Update board state
         temp_tiles = self.tiles.copy()
         counts = self.get_neighbor_counts()
         for i in range(self.tile_count):
@@ -141,19 +176,57 @@ class Mazectric(Board):
         self.tiles.clear()
         self.tiles = temp_tiles
 
+    def update_player(self):
+        p_r, p_c = self.player.get_col(), self.player.get_row()
+        if self.tiles[p_c][p_r].get_state() == ON:
+            adj_table = [(-1, -1), (0, -1), (1, -1), (-1, 0), (1, 0), (-1, 1), (0, 1), (1, 1)]
+
+
+
     def process_inputs(self):
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_r:
-                    self.gen()
+                self.key_commands[event.key]()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
-                    mouse_pos = pygame.mouse.get_pos()
-                    for i in range(self.tile_count):
-                        for j in range(self.tile_count):
-                            rect = self.tiles[i][j].get_rect()
-                            if rect.collidepoint(mouse_pos):
-                                self.tiles[i][j].set_state(OFF)
+                    self.flip_tile_at_loc(pygame.mouse.get_pos())
+
+    def draw(self):
+        super().draw()
+        self.draw_player()
+
+    def draw_player(self):
+        screen = pygame.display.get_surface()
+        size = self.player.get_size()
+        row = self.player.get_row()
+        col = self.player.get_col()
+        c_center = (row * size) + (size / 2), (col * size) + (size / 2)
+        c_radius = size / 2
+        pygame.draw.circle(screen, self.player.get_color(), c_center, c_radius)
+
+    def player_move_left(self):
+        c = self.player.get_col()
+        r = self.player.get_row()
+        if self.tiles[(r - 1) % self.tile_count][c].get_state() == OFF:
+            self.player.set_row((self.player.get_row() - 1) % self.tile_count)
+
+    def player_move_right(self):
+        c = self.player.get_col()
+        r = self.player.get_row()
+        if self.tiles[(r + 1) % self.tile_count][c].get_state() == OFF:
+            self.player.set_row((self.player.get_row() + 1) % self.tile_count)
+
+    def player_move_up(self):
+        c = self.player.get_col()
+        r = self.player.get_row()
+        if self.tiles[r][(c - 1) % self.tile_count].get_state() == OFF:
+            self.player.set_col((self.player.get_col() - 1) % self.tile_count)
+
+    def player_move_down(self):
+        c = self.player.get_col()
+        r = self.player.get_row()
+        if self.tiles[r][(c + 1) % self.tile_count].get_state() == OFF:
+            self.player.set_col((self.player.get_col() + 1) % self.tile_count)
 
 
 class GameOfLife(Board):
@@ -175,11 +248,8 @@ class GameOfLife(Board):
         self.tiles = temp_tiles
 
     def process_inputs(self):
-        # mouse_pos = pygame.mouse.get_pos()
-        # for i in range(self.cell_count):
-        #     for j in range(self.cell_count):
-        #         rect = self.cells[i][j].get_rect()
-        #         if rect.collidepoint(mouse_pos):
-        #             self.cells[i][j].set_color((255, 0, 0))
-        pass
+        for event in pygame.event.get():
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if event.button == 1:
+                    self.flip_tile_at_loc(pygame.mouse.get_pos())
 

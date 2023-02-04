@@ -11,9 +11,9 @@ class Game:
     def __init__(self):
         self.width = 800
         self.height = 800
-        self.cell_count = 80
+        self.cell_count = 20
         self.cell_size = ((self.width / self.cell_count) + (self.height / self.cell_count)) / 2
-        self.board = engine.GameOfLife(self.cell_count, self.cell_size, self.width, self.height)
+        self.board = engine.Mazectric(self.cell_count, self.cell_size, self.width, self.height)
         pygame.init()
         pygame.display.set_mode((self.width, self.height))
         self.clock = pygame.time.Clock()
