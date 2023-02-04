@@ -34,6 +34,7 @@ class Game:
         self.board = BOARDS[board_name](self.cell_count, self.cell_size, self.width, self.height)
         pygame.init()
         pygame.display.set_mode((self.width, self.height))
+        pygame.display.set_caption(board_name)
         # Used for frame limiting the window
         self.clock = pygame.time.Clock()
         # Used in exiting game loop

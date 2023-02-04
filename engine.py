@@ -370,4 +370,3 @@ class GameOfLife(Board):
 
     def process_outputs(self):
         self.draw()
-
