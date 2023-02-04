@@ -1,0 +1,14 @@
+[X] * Has a core game loop and is frame limited (10)
+[X] * Must have some mechanism for easily changing the framerate (10)
+[X] * Grow and draw a maze using the prescribed cellular automata method (15)
+[X] * Draw your maze at a framerate using squares for each cell (10)
+[X] * Must handle quit events, mouse events, and keyboard events (15)
+[X]     * Clicking the close button should shut down the game.
+[X]     * Clicking a rectangle causes that rectangle to become a new color (toggle the rects)
+[X] * Must have a circle that represents the player. (20)
+[X]     * The player will start in the top left corner of the maze.
+[X]     * The player must be able to move through the maze corridors, but not through walls
+[X]     * Making it to the lower right corner should result in a "win"
+[X] * Fully commented and documented code that includes headers for all public classes and methods (10)
+[X]     * If a method has a return type, or takes parameters, or throws exceptions, it should be documented
+[ ] * You must demo your project in class on the due date for full points (10)
