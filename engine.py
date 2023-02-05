@@ -268,7 +268,9 @@ class Mazectric(Board):
                 elif event.key == pygame.K_f:
                     pass
                 else:
-                    self.key_commands[event.key]()
+                    func = self.key_commands.get(event.key)
+                    if func is not None:
+                        func()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
                     self.flip_tile_at_loc(pygame.mouse.get_pos())

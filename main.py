@@ -53,7 +53,7 @@ class Game:
         if self.win_condition:
             screen = pygame.display.get_surface()
             font = pygame.font.SysFont('Helvetica.ttf', 128)
-            text = font.render("You Win!", True, (255, 63, 63))
+            text = font.render("You Win!", True, (255, 0, 0))
             screen.blit(text, (self.width / 4, self.height / 4))
         pygame.display.flip()
 
@@ -72,6 +72,9 @@ class Game:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_f:
                     self.is_debug = not self.is_debug
+                if event.key == pygame.K_r:
+                    if self.win_condition:
+                        self.__init__(WIDTH, HEIGHT, CELL_COUNT, FRAME_RATE, CURRENT_BOARD)
 
     def update(self):
         """Processes the board and checks win condition"""
